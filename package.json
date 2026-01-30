@@ -2,6 +2,7 @@
   "name": "@cencivic/runx",
   "version": "0.1.0",
   "description": "uv-like script runner for TypeScript",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "runx": "./bin/runx.js"
