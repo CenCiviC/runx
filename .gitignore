@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.lock
+bun.lockb
+package-lock.json
+tmp/
