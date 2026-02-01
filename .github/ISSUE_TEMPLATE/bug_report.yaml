@@ -1,0 +1,59 @@
+name: Bug Report
+description: Report an error or unexpected behavior
+labels: ["bug"]
+body:
+  - type: textarea
+    attributes:
+      label: Summary
+      description: |
+        A clear and concise description of the bug, including a minimal reproducible example.
+        Please include the full output with any error messages.
+      placeholder: |
+        When I run `runx my-script.ts`, I get the following error:
+        ```
+        Error: ...
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Script Example
+      description: If applicable, provide a minimal script that reproduces the issue.
+      render: typescript
+      placeholder: |
+        /// <reference types="bun-types" />
+        // Your script here
+    validations:
+      required: false
+
+  - type: input
+    attributes:
+      label: runx Version
+      description: What version of runx are you using? (see `runx --version`)
+      placeholder: e.g., 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Platform
+      description: What operating system and architecture are you using? (see `uname -orsm`)
+      placeholder: e.g., macOS 14 arm64, Windows 11 x86_64, Ubuntu 24.04 amd64
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Node.js / Bun Version
+      description: What versions are you using? (see `node --version` and `bun --version`)
+      placeholder: e.g., Node.js v20.10.0, Bun 1.1.0
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem (logs, screenshots, etc.)
+    validations:
+      required: false

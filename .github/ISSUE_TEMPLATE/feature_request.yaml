@@ -1,0 +1,46 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: A clear and concise description of the feature you'd like.
+      placeholder: I would like runx to support...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Use Case
+      description: Why is this feature needed? What problem does it solve?
+      placeholder: |
+        Currently, I have to...
+        With this feature, I could...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Proposed Solution
+      description: How might this work? Include any API or CLI examples if applicable.
+      render: typescript
+      placeholder: |
+        // Example usage
+        runx --new-flag script.ts
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: Any other context, references, or screenshots about the feature request.
+    validations:
+      required: false
