@@ -12,8 +12,10 @@ const CACHE_BASE = join(homedir(), '.cache', 'runx', 'envs');
  * Generate cache key from dependencies.
  */
 export function generateCacheKey(metadata: ScriptMetadata): string {
-  const sortedDeps = [...metadata.dependencies].sort();
-  const content = JSON.stringify(sortedDeps);
+  const sortedEntries = Object.entries(metadata.dependencies).sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+  const content = JSON.stringify(sortedEntries);
   return createHash('sha256').update(content).digest('hex').slice(0, 16);
 }
 
@@ -37,25 +39,12 @@ export function cacheExists(metadata: ScriptMetadata): boolean {
  * Create package.json content for dependencies.
  */
 function createPackageJson(metadata: ScriptMetadata): string {
-  const dependencies: Record<string, string> = {};
-
-  for (const dep of metadata.dependencies) {
-    const atIndex = dep.lastIndexOf('@');
-    if (atIndex > 0) {
-      const name = dep.slice(0, atIndex);
-      const version = dep.slice(atIndex + 1);
-      dependencies[name] = version;
-    } else {
-      dependencies[dep] = 'latest';
-    }
-  }
-
   return JSON.stringify(
     {
       name: 'runx-env',
       version: '0.0.0',
       private: true,
-      dependencies,
+      dependencies: metadata.dependencies,
     },
     null,
     2,
@@ -89,7 +78,7 @@ async function runBunInstall(cacheDir: string): Promise<void> {
  * Creates cache if it doesn't exist.
  */
 export async function resolveEnvironment(metadata: ScriptMetadata): Promise<string> {
-  if (metadata.dependencies.length === 0) {
+  if (Object.keys(metadata.dependencies).length === 0) {
     return '';
   }
 

@@ -16,14 +16,26 @@ Usage:
 
 Example script:
   /**
-   * /// script
-   * dependencies = [
-   *   "chalk@5.3.0",
-   * ]
-   * ///
+   * @runx {
+   *     "dependencies": {
+   *       "chalk": "^5.0.0",
+   *       "zod": "~3.22.0"
+   *     },
+   *     "env": { "DEBUG": "true" },
+   *     "engines": { "bun": ">=1.0" },
+   *     "args": ["--verbose"]
+   *   }
    */
   import chalk from 'chalk';
   console.log(chalk.green('Hello!'));
+
+Dependency versions (same as package.json):
+  "5.3.0"     Exact version
+  "^5.0.0"    Compatible with 5.x.x (minor/patch updates)
+  "~5.3.0"    Approximately 5.3.x (patch updates only)
+  ">=1.0.0"   Version range
+  "latest"    Latest version
+  "*"         Any version
 `.trim();
 
 async function main(): Promise<void> {
@@ -60,7 +72,7 @@ async function main(): Promise<void> {
     const nodeModulesPath = await resolveEnvironment(metadata);
 
     // Run the script
-    const exitCode = await runScript(scriptPath, nodeModulesPath, scriptArgs);
+    const exitCode = await runScript(scriptPath, nodeModulesPath, scriptArgs, metadata);
     process.exit(exitCode);
   } catch (err) {
     console.error('Error:', err instanceof Error ? err.message : err);

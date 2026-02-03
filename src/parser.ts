@@ -1,17 +1,18 @@
 import { readFile } from 'node:fs/promises';
+import { type Block, parse } from 'comment-parser';
 import type { ScriptMetadata } from './types.js';
 
 /**
- * Parse script metadata from JSDoc block.
+ * Parse script metadata from @runx JSDoc tag.
  *
  * Expected format:
  * /**
- *  * /// script
- *  * dependencies = [
- *  *   "zod@3.22.0",
- *  *   "chalk@5.3.0",
- *  * ]
- *  * ///
+ *  * @runx {
+ *  *   "dependencies": ["zod@3.22.0", "chalk@5.3.0"],
+ *  *   "env": { "NODE_ENV": "production" },
+ *  *   "engines": { "bun": ">=1.0" },
+ *  *   "args": ["--verbose"]
+ *  * }
  *  *\/
  */
 export async function parseScriptMetadata(scriptPath: string): Promise<ScriptMetadata> {
@@ -20,56 +21,70 @@ export async function parseScriptMetadata(scriptPath: string): Promise<ScriptMet
 }
 
 export function parseMetadataFromContent(content: string): ScriptMetadata {
-  // Match JSDoc block containing /// script ... ///
-  const jsdocPattern = /\/\*\*[\s\S]*?\*\//;
-  const jsdocMatch = content.match(jsdocPattern);
+  const parsed = parse(content);
 
-  if (!jsdocMatch) {
-    return { dependencies: [] };
+  for (const block of parsed) {
+    for (const tag of block.tags) {
+      if (tag.tag === 'runx') {
+        const jsonStr = extractJsonFromTag(tag);
+        if (jsonStr) {
+          try {
+            const metadata = JSON.parse(jsonStr);
+            return {
+              dependencies: metadata.dependencies ?? {},
+              env: metadata.env,
+              engines: metadata.engines,
+              args: metadata.args,
+            };
+          } catch {
+            throw new Error(`Invalid JSON in @runx tag: ${jsonStr}`);
+          }
+        }
+      }
+    }
   }
 
-  const jsdocBlock = jsdocMatch[0];
-
-  // Check if this JSDoc block contains /// script ... ///
-  const scriptBlockPattern = /\/\/\/\s*script\s*([\s\S]*?)\/\/\//;
-  const scriptMatch = jsdocBlock.match(scriptBlockPattern);
-
-  if (!scriptMatch) {
-    return { dependencies: [] };
-  }
-
-  const scriptContent = scriptMatch[1];
-
-  // Parse dependencies array
-  const dependencies = parseDependencies(scriptContent);
-
-  return { dependencies };
+  return { dependencies: {} };
 }
 
-function parseDependencies(content: string): string[] {
-  // Remove JSDoc asterisks from lines
-  const cleanedContent = content
-    .split('\n')
-    .map((line) => line.replace(/^\s*\*\s?/, ''))
-    .join('\n');
-
-  // Match dependencies = [...] pattern
-  const depsPattern = /dependencies\s*=\s*\[([\s\S]*?)\]/;
-  const depsMatch = cleanedContent.match(depsPattern);
-
-  if (!depsMatch) {
-    return [];
+function extractJsonFromTag(tag: Block['tags'][0]): string | null {
+  // comment-parser puts { ... } content in the 'type' token
+  // For multiline JSON, we need to reconstruct from all source lines
+  const typeParts: string[] = [];
+  for (const sourceLine of tag.source) {
+    const typeToken = sourceLine.tokens.type;
+    if (typeToken) {
+      typeParts.push(typeToken);
+    }
   }
 
-  const depsContent = depsMatch[1];
+  const fullContent = typeParts.join('\n').trim();
 
-  // Extract quoted strings
-  const stringPattern = /"([^"]+)"|'([^']+)'/g;
-  const dependencies: string[] = [];
-
-  for (const match of depsContent.matchAll(stringPattern)) {
-    dependencies.push(match[1] || match[2]);
+  // Find the JSON object boundaries
+  const startIndex = fullContent.indexOf('{');
+  if (startIndex === -1) {
+    return null;
   }
 
-  return dependencies;
+  // Find matching closing brace
+  let braceCount = 0;
+  let endIndex = -1;
+
+  for (let i = startIndex; i < fullContent.length; i++) {
+    if (fullContent[i] === '{') {
+      braceCount++;
+    } else if (fullContent[i] === '}') {
+      braceCount--;
+      if (braceCount === 0) {
+        endIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (endIndex === -1) {
+    return null;
+  }
+
+  return fullContent.slice(startIndex, endIndex + 1);
 }
