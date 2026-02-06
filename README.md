@@ -12,7 +12,6 @@ Inspired by [uv](https://github.com/astral-sh/uv)'s script runner for Python.
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [How It Works](#how-it-works)
 - [CLI](#cli)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
@@ -60,15 +59,6 @@ runx script.ts
 ```
 
 On first run, dependencies are installed and cached. Subsequent runs use the cache.
-
-## How It Works
-
-1. Parse JSDoc metadata from the script
-2. Generate cache key from sorted dependencies (`sha256`)
-3. Check `~/.cache/runx/envs/<hash>/`
-   - If exists: use cached environment
-   - If not: create `package.json` and run `bun install`
-4. Run script with `NODE_PATH` set to cached `node_modules`
 
 ## CLI
 
