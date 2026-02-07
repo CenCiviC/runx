@@ -36,19 +36,24 @@ AI coding assistants (Claude, Copilot, Cursor, etc.) are great at generating one
 /**
  * @runx {
  *   "dependencies": {
- *     "csv-parse": "^5.5.0",
+ *     "lodash-es": "^4.17.21",
  *     "chalk": "^5.3.0"
  *   }
  * }
  */
 
-import { parse } from 'csv-parse/sync';
+import _ from 'lodash-es';
 import chalk from 'chalk';
 
-// AI-generated one-off migration script
+// AI-generated one-off data processing script
 // Zero impact on your project's package.json or lock file
-const data = parse(await Bun.file('data.csv').text(), { columns: true });
-console.log(chalk.green(`Processed ${data.length} rows`));
+const users = [
+  { name: 'Alice', score: 90 },
+  { name: 'Bob', score: 85 },
+  { name: 'Charlie', score: 95 },
+];
+const top = _.maxBy(users, 'score')!;
+console.log(chalk.green(`Top scorer: ${top.name} (${top.score})`));
 ```
 
 Just ask your AI assistant to *"write a runx script that does X"* — you get a single, self-contained `.ts` file that runs anywhere without touching your project configuration. When you're done, simply delete the file. No cleanup needed.
@@ -56,7 +61,7 @@ Just ask your AI assistant to *"write a runx script that does X"* — you get a 
 ## Installation
 
 ```bash
-npm install -g @cencivic/runx
+bun install -g @cencivic/runx
 ```
 
 Requires [bun](https://bun.sh) to be installed.
@@ -95,34 +100,6 @@ runx script.ts
 ```
 
 On first run, dependencies are installed and cached. Subsequent runs use the cache.
-
-### Metadata Fields
-
-The `@runx` block accepts a JSON object with the following fields:
-
-| Field | Type | Description |
-|---|---|---|
-| `dependencies` | `Record<string, string>` | Package.json-style dependencies (required) |
-| `env` | `Record<string, string>` | Environment variables to set |
-| `engines` | `{ bun?: string; node?: string }` | Runtime version requirements |
-| `args` | `string[]` | Default arguments for the script |
-
-Full example with all fields:
-
-```typescript
-/**
- * @runx {
- *   "dependencies": {
- *     "chalk": "^5.0.0",
- *     "zod": "~3.22.0",
- *     "@types/node": "20.0.0"
- *   },
- *   "env": { "NODE_ENV": "production", "DEBUG": "true" },
- *   "engines": { "bun": ">=1.0", "node": ">=18" },
- *   "args": ["--verbose"]
- * }
- */
-```
 
 ## CLI
 
