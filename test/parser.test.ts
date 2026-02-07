@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { parseMetadataFromContent } from '../parser.js';
+import { parseMetadataFromContent } from '../src/parser.js';
 
 describe('parseMetadataFromContent', () => {
   describe('dependencies parsing', () => {
@@ -112,123 +112,21 @@ import { z } from 'zod';
     });
   });
 
-  describe('env parsing', () => {
-    test('parses env variables', () => {
-      const content = `
-/**
- * @runx {
- *   "dependencies": {},
- *   "env": { "NODE_ENV": "production", "DEBUG": "true" }
- * }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.env).toEqual({ NODE_ENV: 'production', DEBUG: 'true' });
-    });
-
-    test('returns undefined when no env specified', () => {
-      const content = `
-/**
- * @runx { "dependencies": { "chalk": "5.3.0" } }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.env).toBeUndefined();
-    });
-  });
-
-  describe('engines parsing', () => {
-    test('parses bun engine requirement', () => {
-      const content = `
-/**
- * @runx {
- *   "dependencies": {},
- *   "engines": { "bun": ">=1.0" }
- * }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.engines).toEqual({ bun: '>=1.0' });
-    });
-
-    test('parses node engine requirement', () => {
-      const content = `
-/**
- * @runx {
- *   "dependencies": {},
- *   "engines": { "node": ">=18" }
- * }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.engines).toEqual({ node: '>=18' });
-    });
-
-    test('parses both engines', () => {
-      const content = `
-/**
- * @runx {
- *   "dependencies": {},
- *   "engines": { "bun": ">=1.0", "node": ">=18" }
- * }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.engines).toEqual({ bun: '>=1.0', node: '>=18' });
-    });
-  });
-
-  describe('args parsing', () => {
-    test('parses args array', () => {
-      const content = `
-/**
- * @runx {
- *   "dependencies": {},
- *   "args": ["--verbose", "-n", "10"]
- * }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.args).toEqual(['--verbose', '-n', '10']);
-    });
-
-    test('returns undefined when no args specified', () => {
-      const content = `
-/**
- * @runx { "dependencies": {} }
- */
-`;
-      const result = parseMetadataFromContent(content);
-      expect(result.args).toBeUndefined();
-    });
-  });
-
   describe('multiline JSON', () => {
-    test('parses multiline JSON with all fields', () => {
+    test('parses multiline dependencies', () => {
       const content = `
 /**
  * @runx {
  *   "dependencies": {
  *     "chalk": "5.3.0",
  *     "zod": "3.22.0"
- *   },
- *   "env": {
- *     "NODE_ENV": "production",
- *     "DEBUG": "true"
- *   },
- *   "engines": {
- *     "bun": ">=1.0"
- *   },
- *   "args": ["--verbose"]
+ *   }
  * }
  */
 import chalk from 'chalk';
 `;
       const result = parseMetadataFromContent(content);
       expect(result.dependencies).toEqual({ chalk: '5.3.0', zod: '3.22.0' });
-      expect(result.env).toEqual({ NODE_ENV: 'production', DEBUG: 'true' });
-      expect(result.engines).toEqual({ bun: '>=1.0' });
-      expect(result.args).toEqual(['--verbose']);
     });
   });
 

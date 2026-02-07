@@ -10,12 +10,48 @@ Inspired by [uv](https://github.com/astral-sh/uv)'s script runner for Python.
 
 ## Table of Contents
 
+- [Why runx?](#why-runx)
 - [Installation](#installation)
 - [Usage](#usage)
 - [CLI](#cli)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
 - [License](#license)
+
+## Why runx?
+
+### AI-friendly scripting without side effects
+
+AI coding assistants (Claude, Copilot, Cursor, etc.) are great at generating one-off utility scripts — data migration, file processing, API testing, quick prototyping, and more. But these scripts often need external packages, and that's where things get messy:
+
+- Adding dependencies to the project's `package.json` just for a throwaway script
+- Lock file (`package-lock.json`, `bun.lock`) diffs polluting your git history
+- Risk of version conflicts with your actual project dependencies
+- Forgetting to clean up after the script is no longer needed
+
+**runx solves this.** Each script declares its own dependencies inline, installed into an isolated cache — completely independent from your project.
+
+```typescript
+#!/usr/bin/env runx
+/**
+ * @runx {
+ *   "dependencies": {
+ *     "csv-parse": "^5.5.0",
+ *     "chalk": "^5.3.0"
+ *   }
+ * }
+ */
+
+import { parse } from 'csv-parse/sync';
+import chalk from 'chalk';
+
+// AI-generated one-off migration script
+// Zero impact on your project's package.json or lock file
+const data = parse(await Bun.file('data.csv').text(), { columns: true });
+console.log(chalk.green(`Processed ${data.length} rows`));
+```
+
+Just ask your AI assistant to *"write a runx script that does X"* — you get a single, self-contained `.ts` file that runs anywhere without touching your project configuration. When you're done, simply delete the file. No cleanup needed.
 
 ## Installation
 

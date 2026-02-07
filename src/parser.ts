@@ -8,10 +8,10 @@ import type { ScriptMetadata } from './types.js';
  * Expected format:
  * /**
  *  * @runx {
- *  *   "dependencies": ["zod@3.22.0", "chalk@5.3.0"],
- *  *   "env": { "NODE_ENV": "production" },
- *  *   "engines": { "bun": ">=1.0" },
- *  *   "args": ["--verbose"]
+ *  *   "dependencies": {
+ *  *     "zod": "^3.22.0",
+ *  *     "chalk": "^5.3.0"
+ *  *   }
  *  * }
  *  *\/
  */
@@ -32,9 +32,6 @@ export function parseMetadataFromContent(content: string): ScriptMetadata {
             const metadata = JSON.parse(jsonStr);
             return {
               dependencies: metadata.dependencies ?? {},
-              env: metadata.env,
-              engines: metadata.engines,
-              args: metadata.args,
             };
           } catch {
             throw new Error(`Invalid JSON in @runx tag: ${jsonStr}`);
