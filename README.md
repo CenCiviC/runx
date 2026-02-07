@@ -27,17 +27,17 @@ Requires [bun](https://bun.sh) to be installed.
 
 ## Usage
 
-Create a TypeScript file with dependencies declared in a JSDoc block:
+Create a TypeScript file with dependencies declared in a `@runx` JSDoc block:
 
 ```typescript
 #!/usr/bin/env runx
 /**
- * /// script
- * dependencies = [
- *   "zod@3.22.0",
- *   "chalk@5.3.0",
- * ]
- * ///
+ * @runx {
+ *   "dependencies": {
+ *     "zod": "^3.22.0",
+ *     "chalk": "^5.3.0"
+ *   }
+ * }
  */
 
 import { z } from 'zod';
@@ -59,6 +59,34 @@ runx script.ts
 ```
 
 On first run, dependencies are installed and cached. Subsequent runs use the cache.
+
+### Metadata Fields
+
+The `@runx` block accepts a JSON object with the following fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `dependencies` | `Record<string, string>` | Package.json-style dependencies (required) |
+| `env` | `Record<string, string>` | Environment variables to set |
+| `engines` | `{ bun?: string; node?: string }` | Runtime version requirements |
+| `args` | `string[]` | Default arguments for the script |
+
+Full example with all fields:
+
+```typescript
+/**
+ * @runx {
+ *   "dependencies": {
+ *     "chalk": "^5.0.0",
+ *     "zod": "~3.22.0",
+ *     "@types/node": "20.0.0"
+ *   },
+ *   "env": { "NODE_ENV": "production", "DEBUG": "true" },
+ *   "engines": { "bun": ">=1.0", "node": ">=18" },
+ *   "args": ["--verbose"]
+ * }
+ */
+```
 
 ## CLI
 
