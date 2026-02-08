@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@cencivic/runx.svg)](https://www.npmjs.com/package/@cencivic/runx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Run TypeScript scripts with inline dependencies.
+Run self-contained TypeScript scripts with inline dependencies.
 
 Inspired by [uv](https://github.com/astral-sh/uv)'s script runner for Python.
 

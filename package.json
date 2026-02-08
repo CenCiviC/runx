@@ -1,7 +1,7 @@
 {
   "name": "@cencivic/runx",
   "version": "0.1.1",
-  "description": "uv-like script runner for TypeScript",
+  "description": "Run self-contained TypeScript scripts with inline dependencies",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -29,6 +29,11 @@
     "typescript": "^5.0.0",
     "@types/bun": "latest"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CenCiviC/runx.git"
+  },
+  "homepage": "https://github.com/CenCiviC/runx#readme",
   "dependencies": {
     "comment-parser": "^1.4.5"
   }
