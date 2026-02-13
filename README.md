@@ -60,11 +60,67 @@ Just ask your AI assistant to *"write a runx script that does X"* — you get a 
 
 ## Installation
 
+Running scripts requires [bun](https://bun.sh) to be installed.
+
+### Project installation
+
+Install `runx` as a development dependency:
+
 ```bash
+# npm
+npm install -D @cencivic/runx
+
+# pnpm
+pnpm add -D @cencivic/runx
+
+# bun
+bun add -D @cencivic/runx
+```
+
+You can then run `runx` with your package manager:
+
+```bash
+# npm
+npx runx ./script.ts
+
+# pnpm
+pnpm exec runx ./script.ts
+
+# bun
+bunx runx ./script.ts
+```
+
+You can also reference it in your `package.json` scripts directly:
+
+```json
+{
+  "scripts": {
+    "migrate": "runx ./scripts/migrate.ts",
+    "seed": "runx ./scripts/seed.ts"
+  }
+}
+```
+
+### Global installation
+
+To use `runx` as a shell command across all projects:
+
+```bash
+# npm
+npm install -g @cencivic/runx
+
+# pnpm
+pnpm add -g @cencivic/runx
+
+# bun
 bun install -g @cencivic/runx
 ```
 
-Requires [bun](https://bun.sh) to be installed.
+Then you can run it directly:
+
+```bash
+runx ./script.ts
+```
 
 ## Usage
 

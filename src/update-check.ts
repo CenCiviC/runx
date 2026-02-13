@@ -107,7 +107,7 @@ export function formatUpdateMessage(currentVersion: string, latestVersion: strin
   return [
     '',
     `  Update available: ${currentVersion} → \x1b[32m${latestVersion}\x1b[0m`,
-    `  Run \x1b[36mbun install -g @cencivic/runx\x1b[0m to update`,
+    `  Run \x1b[36mnpm install -D @cencivic/runx@latest\x1b[0m to update`,
     '',
   ].join('\n');
 }
