@@ -29,6 +29,17 @@
     "typescript": "^5.0.0",
     "@types/bun": "latest"
   },
+  "keywords": [
+    "typescript",
+    "script-runner",
+    "inline-dependencies",
+    "self-contained scripts",
+    "bun",
+    "runx",
+    "scripting",
+    "cli",
+    "devtools"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/CenCiviC/runx.git"

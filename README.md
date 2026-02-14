@@ -101,6 +101,21 @@ You can also reference it in your `package.json` scripts directly:
 }
 ```
 
+### One-off usage (no install)
+
+Run `runx` without installing it to your project:
+
+```bash
+# npm
+npx @cencivic/runx ./script.ts
+
+# pnpm
+pnpm dlx @cencivic/runx ./script.ts
+
+# bun
+bunx @cencivic/runx ./script.ts
+```
+
 ### Global installation
 
 To use `runx` as a shell command across all projects:
@@ -157,13 +172,48 @@ runx script.ts
 
 On first run, dependencies are installed and cached. Subsequent runs use the cache.
 
+### Scripts (named arg aliases)
+
+Define reusable argument presets in the `scripts` field:
+
+```typescript
+#!/usr/bin/env runx
+/**
+ * @runx {
+ *   "dependencies": {
+ *     "express": "^4.18.0"
+ *   },
+ *   "scripts": {
+ *     "dev": "--watch --port 3000",
+ *     "prod": "--port 8080 --minify"
+ *   }
+ * }
+ */
+
+// your server code...
+```
+
+Run a named script using the colon syntax:
+
+```bash
+runx server.ts:dev        # → args: ["--watch", "--port", "3000"]
+runx server.ts:prod       # → args: ["--port", "8080", "--minify"]
+```
+
+Additional arguments are appended after the script's predefined args:
+
+```bash
+runx server.ts:dev --verbose  # → args: ["--watch", "--port", "3000", "--verbose"]
+```
+
 ## CLI
 
 ```bash
-runx <script.ts> [args...]   # Run a script
-runx --clean                 # Clear all cached environments
-runx --version               # Show version
-runx --help                  # Show help
+runx <script.ts> [args...]        # Run a script
+runx <script.ts>:<name> [args...] # Run with a named script alias
+runx --clean                      # Clear all cached environments
+runx --version                    # Show version
+runx --help                       # Show help
 ```
 
 ## Contributing

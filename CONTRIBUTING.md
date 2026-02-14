@@ -41,13 +41,18 @@ Before you begin, ensure you have the following installed:
 
 ```
 runx/
-├── bin/          # CLI entry point
-├── dist/         # Compiled output
-├── src/          # Source code
-│   ├── cli.ts    # CLI implementation
-│   ├── parser.ts # Script metadata parser
-│   └── ...
-├── biome.json    # Linter/formatter config
+├── bin/              # CLI entry point
+├── dist/             # Compiled output
+├── examples/         # Example scripts with @runx metadata
+├── src/              # Source code
+│   ├── cli.ts        # CLI implementation
+│   ├── parser.ts     # Script metadata parser (@runx JSDoc)
+│   ├── script-arg.ts # Colon syntax parser (e.g. script.ts:dev)
+│   ├── resolver.ts   # Dependency resolver & cache management
+│   ├── runner.ts     # Script execution via bun
+│   └── types.ts      # Shared type definitions
+├── test/             # Test files
+├── biome.json        # Linter/formatter config
 ├── package.json
 └── tsconfig.json
 ```
