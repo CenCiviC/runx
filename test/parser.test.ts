@@ -130,6 +130,58 @@ import chalk from 'chalk';
     });
   });
 
+  describe('scripts parsing', () => {
+    test('parses scripts field', () => {
+      const content = `
+/**
+ * @runx {
+ *   "dependencies": { "express": "^4.18.0" },
+ *   "scripts": {
+ *     "dev": "--watch --port 3000",
+ *     "prod": "--port 8080 --minify"
+ *   }
+ * }
+ */
+`;
+      const result = parseMetadataFromContent(content);
+      expect(result.scripts).toEqual({
+        dev: '--watch --port 3000',
+        prod: '--port 8080 --minify',
+      });
+      expect(result.dependencies).toEqual({ express: '^4.18.0' });
+    });
+
+    test('returns empty scripts when not defined', () => {
+      const content = `
+/**
+ * @runx { "dependencies": { "chalk": "5.3.0" } }
+ */
+`;
+      const result = parseMetadataFromContent(content);
+      expect(result.scripts).toEqual({});
+    });
+
+    test('returns empty scripts when no @runx tag', () => {
+      const content = `console.log('hello');`;
+      const result = parseMetadataFromContent(content);
+      expect(result.scripts).toEqual({});
+    });
+
+    test('parses scripts with dependencies together', () => {
+      const content = `
+/**
+ * @runx {
+ *   "dependencies": { "chalk": "^5.0.0", "zod": "~3.22.0" },
+ *   "scripts": { "test": "--verbose --bail" }
+ * }
+ */
+`;
+      const result = parseMetadataFromContent(content);
+      expect(result.dependencies).toEqual({ chalk: '^5.0.0', zod: '~3.22.0' });
+      expect(result.scripts).toEqual({ test: '--verbose --bail' });
+    });
+  });
+
   describe('edge cases', () => {
     test('returns empty object when no JSDoc block', () => {
       const content = `console.log('hello');`;

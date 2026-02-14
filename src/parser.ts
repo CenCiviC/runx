@@ -32,6 +32,7 @@ export function parseMetadataFromContent(content: string): ScriptMetadata {
             const metadata = JSON.parse(jsonStr);
             return {
               dependencies: metadata.dependencies ?? {},
+              scripts: metadata.scripts ?? {},
             };
           } catch {
             throw new Error(`Invalid JSON in @runx tag: ${jsonStr}`);
@@ -41,7 +42,7 @@ export function parseMetadataFromContent(content: string): ScriptMetadata {
     }
   }
 
-  return { dependencies: {} };
+  return { dependencies: {}, scripts: {} };
 }
 
 function extractJsonFromTag(tag: Block['tags'][0]): string | null {
