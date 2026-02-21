@@ -1,6 +1,6 @@
 {
   "name": "@cencivic/runx",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Run self-contained TypeScript scripts with inline dependencies",
   "license": "MIT",
   "type": "module",
