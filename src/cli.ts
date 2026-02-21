@@ -73,6 +73,10 @@ async function main(): Promise<void> {
 
   if (args[0] === '--version' || args[0] === '-v') {
     console.log(VERSION);
+    const latestVersion = await checkForUpdate(VERSION);
+    if (latestVersion) {
+      console.error(formatUpdateMessage(VERSION, latestVersion));
+    }
     process.exit(0);
   }
 
@@ -90,9 +94,6 @@ async function main(): Promise<void> {
     console.error(`Error: File not found: ${scriptPath}`);
     process.exit(1);
   }
-
-  // Start update check in background (non-blocking)
-  const updatePromise = checkForUpdate(VERSION);
 
   try {
     // Parse script metadata
@@ -118,12 +119,6 @@ async function main(): Promise<void> {
 
     // Run the script
     const exitCode = await runScript(scriptPath, nodeModulesPath, scriptArgs);
-
-    // Show update notification after script finishes
-    const latestVersion = await updatePromise;
-    if (latestVersion) {
-      console.error(formatUpdateMessage(VERSION, latestVersion));
-    }
 
     process.exit(exitCode);
   } catch (err) {
